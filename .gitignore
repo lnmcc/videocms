@@ -1,0 +1,12 @@
+.vscode/
+build/
+.DS_Store
+bin/
+gen/
+libs/
+obj/
+.idea
+.gradle
+build/
+cscope*
+uploads/
