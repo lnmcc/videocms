@@ -32,6 +32,7 @@ class Post(Document):
     title = TextField()
     filename = TextField()
     caption = TextField()
+    url = TextField()
     published = DateTimeField(default=datetime.datetime.utcnow)
     all = ViewField('post', '''\
             function(doc) {
@@ -103,11 +104,11 @@ def new():
             except UploadNotAllowed:
                 flash("The upload was not allowed")
             else:
-                post = Post(title=title, caption=caption, filename=filename)
+                post = Post(title=title, caption=caption, filename=filename, url=videos.url(filename))
                 post.id = unique_id()
                 post.store()
                 flash("Post successful")
-                return redirect(videos.url(filename))
+                #return redirect(videos.url(filename))
         return redirect(url_for('index'))
     return render_template('new.html')
 
