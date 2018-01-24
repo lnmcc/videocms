@@ -39,6 +39,10 @@ div.flashes {
     background-color: #ddd;
 }
 
+div.detail {
+    background-color: #000000;
+}
+
 .byline {
     font-style: italic;
     font-size: smaller;
