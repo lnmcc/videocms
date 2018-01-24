@@ -40,15 +40,18 @@ class Post(Document):
                     emit(doc.published, doc);
             }''')
 
-manager = CouchDBManager()
-manager.add_document(Post)
-manager.setup(app)
+dbmanager = CouchDBManager()
+dbmanager.add_document(Post)
+dbmanager.setup(app)
 
 def unique_id():
     return hex(uuid.uuid4().time)[2: -1]
 
 def goto_index():
     return redirect(url_for('index'))
+
+def goto_notfound():
+    return "404"
 
 @app.before_request
 def login_handle():
@@ -111,6 +114,17 @@ def new():
                 #return redirect(videos.url(filename))
         return redirect(url_for('index'))
     return render_template('new.html')
+
+@app.route('/detail/<post_id>', methods=['GET', 'POST'])
+def detail(post_id):
+    post = Post.load(post_id)
+    if not post:
+        goto_notfound()
+    return render_template('detail.html', post=post)
+
+@app.route('/delete', methods=['GET', 'POST'])
+def delete():
+    pass
 
 @app.route('/about')
 def about():
