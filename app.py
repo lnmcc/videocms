@@ -122,9 +122,14 @@ def detail(post_id):
         goto_notfound()
     return render_template('detail.html', post=post)
 
-@app.route('/delete', methods=['GET', 'POST'])
-def delete():
-    pass
+@app.route('/delete/<post_id>', methods=['GET', 'POST'])
+def delete(post_id):
+    post = Post.load(post_id)
+    print post_id
+    if not post:
+        goto_notfound()
+    g.couch.delete(post)
+    return goto_index()
 
 @app.route('/about')
 def about():
