@@ -1,6 +1,8 @@
+# -*- coding: utf8 -*-
 import os
 import datetime
 import uuid
+import zipfile
 from flask import g, Flask, flash, send_from_directory, session, url_for, redirect, request, render_template
 from werkzeug.utils import secure_filename
 from flask_uploads import UploadSet, configure_uploads, IMAGES, UploadNotAllowed
@@ -21,7 +23,7 @@ app.config.from_object(__name__)
 app.secret_key = os.urandom(24)
 app.config['MAX_CONTENT_LENGTH'] = 1 * 1024 * 1024 * 1024
 
-EXTENSIONS = ('mp4', 'MP4', '3gp', '3GP', 'ts', 'TS', 'tar');
+EXTENSIONS = ('mp4', 'MP4', '3gp', '3GP', 'ts', 'TS', 'zip');
 #videos = UploadSet('videos', extensions=EXTENSIONS, default_dest=lambda app: UPLOADED_VIDEOS_DEST)
 videos = UploadSet('videos', extensions=EXTENSIONS)
 
@@ -95,23 +97,31 @@ def index():
 @app.route('/new', methods=['GET', 'POST'])
 def new():
     if request.method == 'POST':
-        video = request.files.get('video')
+        uploaded_file = request.files.get('video')
         title = request.form.get('title')
         caption = request.form.get('caption')
-        if not (video and title and caption):
-            flash("You must fill in all the fileds")
+        if not (uploaded_file and title and caption):
+            flash(u'你需要把所有的字段都填充完整')
         else:
             try:
-                filename = videos.save(video)
+                filename = videos.save(uploaded_file)
+                if filename.split(".")[-1] == "zip":
+                    print "Uploaded a zip file, unzip it"
+                    zip_ref = zipfile.ZipFile(videos.path(filename), 'r')
+                    zip_ref.extractall(app.config['UPLOADED_VIDEOS_DEST'])
+                    zip_ref.close()
+                    
                 print videos.url(filename)
+                print videos.path(filename)
             except UploadNotAllowed:
-                flash("The upload was not allowed")
+                flash(u'上传文件格式错误')
+                flashmessage = u'你只能上传以' + str(EXTENSIONS) + u'后缀的文件'
+                flash(flashmessage)
             else:
                 post = Post(title=title, caption=caption, filename=filename, url=videos.url(filename))
                 post.id = unique_id()
                 post.store()
                 flash("Post successful")
-                #return redirect(videos.url(filename))
         return redirect(url_for('index'))
     return render_template('new.html')
 
@@ -125,9 +135,9 @@ def detail(post_id):
 @app.route('/delete/<post_id>', methods=['GET', 'POST'])
 def delete(post_id):
     post = Post.load(post_id)
-    print post_id
     if not post:
         goto_notfound()
+    os.remove(os.path.abspath(videos.path(post.filename)))
     g.couch.delete(post)
     return goto_index()
 
