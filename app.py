@@ -94,6 +94,16 @@ def index():
     posts = Post.all()
     return render_template('index.html', posts=posts)
 
+def processZipfile(filename):
+    print "Uploaded a zip file, unzip it"
+    zip_ref = zipfile.ZipFile(videos.path(filename), 'r')
+    zip_ref.extractall(app.config['UPLOADED_VIDEOS_DEST'])
+    zip_ref.close()
+    os.remove(os.path.abspath(videos.path(filename))) 
+
+def isZipfile(filename):
+    return filename.split(".")[-1] == "zip"
+
 @app.route('/new', methods=['GET', 'POST'])
 def new():
     if request.method == 'POST':
@@ -105,12 +115,8 @@ def new():
         else:
             try:
                 filename = videos.save(uploaded_file)
-                if filename.split(".")[-1] == "zip":
-                    print "Uploaded a zip file, unzip it"
-                    zip_ref = zipfile.ZipFile(videos.path(filename), 'r')
-                    zip_ref.extractall(app.config['UPLOADED_VIDEOS_DEST'])
-                    zip_ref.close()
-                    
+                if isZipfile(filename):
+                    processZipfile(filename)
                 print videos.url(filename)
                 print videos.path(filename)
             except UploadNotAllowed:
@@ -118,9 +124,12 @@ def new():
                 flashmessage = u'你只能上传以' + str(EXTENSIONS) + u'后缀的文件'
                 flash(flashmessage)
             else:
-                post = Post(title=title, caption=caption, filename=filename, url=videos.url(filename))
-                post.id = unique_id()
-                post.store()
+                if isZipfile(filename):
+                    pass
+                else:
+                    post = Post(title=title, caption=caption, filename=filename, url=videos.url(filename))
+                    post.id = unique_id()
+                    post.store()
                 flash("Post successful")
         return redirect(url_for('index'))
     return render_template('new.html')
