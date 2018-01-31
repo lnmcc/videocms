@@ -40,7 +40,8 @@ div.flashes {
 }
 
 div.detail {
-    background-color: #000000;
+    background-color: #ffffff;
+    word-wrap:break-word;
 }
 
 .byline {
