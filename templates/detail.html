@@ -5,12 +5,15 @@
 {% block body %}
 
 <div class="detail">
-<video width="600" src="{{ post.url }}" controls autoplay >
-Sorry, your browser does not support this video.
-</video>
+    <video width="600" src="{{ post.url }}" controls autoplay >
+    Sorry, your browser does not support this video.
+    </video>
 </div>
 <div>
-<h2><a href= "{{ url_for('delete', post_id=post.id) }}">Delete</a></h2>
+    <h2><a href= "{{ url_for('delete', post_id=post.id) }}">Delete</a></h2>
+</div>
+<div>
+    <p class=caption>{{ post.url }}</p>
 </div>
 
 {% endblock body %}

@@ -125,7 +125,12 @@ def new():
                 flash(flashmessage)
             else:
                 if isZipfile(filename):
-                    pass
+                    file_url = videos.url(filename)
+                    video_name = "".join(filename.rsplit(".zip", 1))
+                    video_url = "".join(file_url.rsplit(".zip", 1)) + "/" + video_name + ".m3u8"
+                    post = Post(title=title, caption=caption, filename=video_name, url=video_url)
+                    post.id = unique_id()
+                    post.store()
                 else:
                     post = Post(title=title, caption=caption, filename=filename, url=videos.url(filename))
                     post.id = unique_id()
