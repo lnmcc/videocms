@@ -22,7 +22,7 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 #app.config.from_envvar('VIDEO_SETTINGS', silent=False)
 app.secret_key = os.urandom(24)
-app.config['MAX_CONTENT_LENGTH'] = 1 * 1024 * 1024 * 1024
+app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024 * 1024
 
 EXTENSIONS = ('mp4', 'MP4', '3gp', '3GP', 'ts', 'TS', 'zip', 'f4v', 'F4V', 'm4v', 'M4V');
 #videos = UploadSet('videos', extensions=EXTENSIONS, default_dest=lambda app: UPLOADED_VIDEOS_DEST)
