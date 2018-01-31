@@ -108,6 +108,11 @@ def isZipfile(filename):
 
 @app.route('/new', methods=['GET', 'POST'])
 def new():
+    flash(u'HLS 文件上传要求：')
+    flash(u'新建与视频文件名同名的文件夹')
+    flash(u'M3U8 文件的命名必须与视频文件名相同')
+    flash(u'将所有 TS 文件以及 m3u8 文件放入上述文件夹')
+    flash(u'将文件夹打包成 zip 格式，命名与视频文件名相同，并以 .zip 为后缀名')
     if request.method == 'POST':
         uploaded_file = request.files.get('video')
         title = request.form.get('title')
