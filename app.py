@@ -1,12 +1,13 @@
 # -*- coding: utf8 -*-
 import os
 import datetime
+import shutil
 import uuid
 import zipfile
 from flask import g, Flask, flash, send_from_directory, session, url_for, redirect, request, render_template
 from werkzeug.utils import secure_filename
 from flask_uploads import UploadSet, configure_uploads, IMAGES, UploadNotAllowed
-from flaskext.couchdb import CouchDBManager, Document, TextField, DateTimeField, ViewField
+from flaskext.couchdb import CouchDBManager, Document, TextField, DateTimeField, ViewField, BooleanField
 
 UPLOADED_VIDEOS_DEST = 'uploads'
 DEBUG = True
@@ -35,6 +36,7 @@ class Post(Document):
     filename = TextField()
     caption = TextField()
     url = TextField()
+    is_folder = BooleanField(default=False)
     published = DateTimeField(default=datetime.datetime.utcnow)
     all = ViewField('post', '''\
             function(doc) {
@@ -128,7 +130,7 @@ def new():
                     file_url = videos.url(filename)
                     video_name = "".join(filename.rsplit(".zip", 1))
                     video_url = "".join(file_url.rsplit(".zip", 1)) + "/" + video_name + ".m3u8"
-                    post = Post(title=title, caption=caption, filename=video_name, url=video_url)
+                    post = Post(title=title, caption=caption, filename=video_name, url=video_url, is_folder=True)
                     post.id = unique_id()
                     post.store()
                 else:
@@ -151,7 +153,10 @@ def delete(post_id):
     post = Post.load(post_id)
     if not post:
         goto_notfound()
-    os.remove(os.path.abspath(videos.path(post.filename)))
+    if post.is_folder:
+        shutil.rmtree(os.path.abspath(videos.path(post.filename)))
+    else:
+        os.remove(os.path.abspath(videos.path(post.filename)))
     g.couch.delete(post)
     return goto_index()
 
