@@ -10,10 +10,26 @@
     </video>
 </div>
 <div>
-    <h2><a href= "{{ url_for('delete', post_id=post.id) }}">Delete</a></h2>
+    <table>
+        <tr>
+            <td><h2><a href= "{{ url_for('delete', post_id=post.id) }}">Delete</a></h2></td>
+            <td><h2><a href= "{{ url_for('edit', post_id=post.id) }}">Edit</a></h2></td>
+        </tr>
+        <tr>
+            <td><p class="caption">Title: {{post.title}}</td>
+        </tr>
+        <tr>
+            <td><p class="caption">Caption: {{post.caption}}</td>
+        </tr>
+        <tr>
+            <td><p class="caption">Published: {{post.published}}</td>
+        </tr>
+        <tr>
+            <td><p class="caption">FileName: {{post.filename}}</td>
+        </tr>
+        <tr>
+            <td><p class="caption">URL: {{ post.url }}</p></td>
+        </tr>
+    </table>
 </div>
-<div>
-    <p class="caption">{{ post.url }}</p>
-</div>
-
 {% endblock body %}

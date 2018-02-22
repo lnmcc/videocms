@@ -165,9 +165,22 @@ def delete(post_id):
     g.couch.delete(post)
     return goto_index()
 
+@app.route('/edit/<post_id>', methods=['GET', 'POST'])
+def edit(post_id):
+    post = Post.load(post_id)
+    if request.method == 'POST':
+        title = request.form.get('title')
+        caption = request.form.get('caption')
+        doc = g.couch.get(post_id)
+        doc['title'] = title
+        doc['caption'] = caption
+        g.couch.save(doc)
+        return redirect(url_for('detail', post_id=post_id))
+    return render_template('edit.html', post=post)
+
 @app.route('/about')
 def about():
-    return render_template('about.html', about='Video CMS V0.1')
+    return render_template('about.html', about='Video CMS V1.0')
 
 if __name__ == '__main__':
     app.run(debug=True, threaded=True, host='0.0.0.0', port=40000)

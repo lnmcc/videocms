@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block title %}Edit{% endblock title %}
+
+{% block body %}
+
+<h2>Edit Post</h2>
+
+<form action="{{ url_for('edit', post_id=post.id) }}" method=POST enctype=multipart/form-data>
+
+<dl>
+
+<dt>Title
+    <dd><input type=text name=title value="{{ post.title }}">
+
+<dt>Caption
+    <dd><textarea name=caption rows=5 cols=40>{{ post.caption }}</textarea>
+
+</dl>
+
+<p><input type=submit value=Post>
+
+</form>
+
+{% endblock body %}
