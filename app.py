@@ -24,7 +24,7 @@ app.config.from_object(__name__)
 app.secret_key = os.urandom(24)
 app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024 * 1024
 
-EXTENSIONS = ('mp4', 'MP4', '3gp', '3GP', 'ts', 'TS', 'zip', 'f4v', 'F4V', 'm4v', 'M4V');
+EXTENSIONS = ('mp4', 'MP4', '3gp', '3GP', 'ts', 'TS', 'zip', 'f4v', 'F4V', 'm4v', 'M4V', 'mov', 'MOV');
 #videos = UploadSet('videos', extensions=EXTENSIONS, default_dest=lambda app: UPLOADED_VIDEOS_DEST)
 videos = UploadSet('videos', extensions=EXTENSIONS)
 
