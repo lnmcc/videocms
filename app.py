@@ -12,8 +12,8 @@ from flaskext.couchdb import CouchDBManager, Document, TextField, DateTimeField,
 UPLOADED_VIDEOS_DEST = 'uploads'
 DEBUG = True
 
-ADMIN_USERNAME = 'admin'
-ADMIN_PASSWORD = '123456'
+ADMIN_USERNAME = 'xxx'
+ADMIN_PASSWORD = 'xxx'
 
 COUCHDB_SERVER = 'http://127.0.0.1:5984/'
 COUCHDB_DATABASE = 'videocms'
@@ -183,4 +183,4 @@ def about():
     return render_template('about.html', about='Video CMS V1.0')
 
 if __name__ == '__main__':
-    app.run(debug=True, threaded=True, host='0.0.0.0', port=40000)
+    app.run(debug=True, threaded=True, host='0.0.0.0', port=xxx)
